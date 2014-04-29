@@ -1,3 +1,7 @@
 rails generate scaffold Micropost content:string user_id:integer //generate new model
+
 ruby s //start ruby server
+
 bundle exec rake db:migrate //update db schema
+
+git push heroku master //deploy code to the heroku
