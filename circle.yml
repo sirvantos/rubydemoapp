@@ -3,8 +3,8 @@ deployment:
   production:
     branch: master
     commands:
-      - bundle exec rake production deploy
+      - bundle exec rake production deploy --trace
   staging:
     branch: develop
     commands:
-      - bundle exec rake staging deploy
+      - bundle exec rake staging deploy --trace
