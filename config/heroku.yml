@@ -11,7 +11,7 @@
 #
 
 production:
-  app: awesomeapp
+  app: rubytestapp-production
   stack: bamboo-ree-1.8.7
   tag: production/*
   config:
@@ -20,7 +20,7 @@ production:
 
 staging:
   stack: cedar
-  app: awesomeapp-staging
+  app: rubytestapp-staging
   config: &default
     BUNDLE_WITHOUT: "development:test"
   addons:

@@ -1,0 +1,10 @@
+## Customize deployment commands
+deployment:
+  production:
+    branch: master
+    commands:
+      - bundle exec rake production deploy
+  staging:
+    branch: develop
+    commands:
+      - bundle exec rake staging deploy
