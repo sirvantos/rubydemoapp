@@ -10,6 +10,10 @@ rails generate scaffold Micropost content:string user_id:integer //generate new 
 
 ruby s //start ruby server
 
+bundle install --without production
+bundle update
+bundle install
+
 bundle exec rake db:migrate //update db schema
 rake db:rollback
 rake db:migrate VERSION=0
