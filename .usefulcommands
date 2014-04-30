@@ -1,5 +1,8 @@
 rails new sampleapp --skip-test-unit //create new application
 
+rails generate controller StaticPages home help --no-test-framework
+rails destroy  controller FooBars baz quux
+
 rails generate scaffold Micropost content:string user_id:integer //generate new model
 
 rails generate rspec:install //generate rspec
@@ -7,5 +10,7 @@ rails generate rspec:install //generate rspec
 ruby s //start ruby server
 
 bundle exec rake db:migrate //update db schema
+rake db:rollback
+rake db:migrate VERSION=0
 
 git push heroku master //deploy code to the heroku
