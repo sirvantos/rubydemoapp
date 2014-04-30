@@ -1,4 +1,8 @@
+rails new sampleapp --skip-test-unit //create new application
+
 rails generate scaffold Micropost content:string user_id:integer //generate new model
+
+rails generate rspec:install //generate rspec
 
 ruby s //start ruby server
 
