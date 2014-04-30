@@ -6,7 +6,11 @@ gem 'rails', '4.0.4'
 gem 'pg', '0.15.1'
 
 group :development do
+	gem 'guard-rspec', '2.5.0'
 	gem 'rspec-rails', '2.13.1'
+	gem 'spork-rails', '4.0.0'
+	gem 'guard-spork', '1.5.0'
+	gem 'childprocess', '0.5.3'
 end
 
 group :test do
