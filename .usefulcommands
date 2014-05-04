@@ -19,3 +19,28 @@ rake db:rollback
 rake db:migrate VERSION=0
 
 git push heroku master //deploy code to the heroku
+
+
+
+(1..5).each { |i| puts 2 * i }
+
+(1..5).each do |i|
+	puts 2 * i
+end
+
+(1..5).each do |number|
+	puts 2 * number
+	puts '--'
+end
+
+3.times { puts "Betelgeuse!" }
+
+(1..5).map { |i| i**2 }
+%w[A B C].map { |char| char.downcase }
+
+('a'..'z').to_a.shuffle[0..7].join
+
+flash = { success: "It worked!", error: "It failed." }
+flash.each do |key, value|
+	puts "Key #{key.inspect} has value #{value.inspect}"
+end
