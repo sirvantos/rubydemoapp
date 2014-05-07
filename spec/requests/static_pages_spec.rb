@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "Static pages" do
-	let(:titlePrefix) { "Ruby on Rails Tutorial Sample App | " }
 	subject { page }
 
 	shared_examples_for "all static pages" do
