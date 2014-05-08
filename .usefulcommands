@@ -22,6 +22,9 @@ rake db:rollback
 rake db:migrate VERSION=0
 rake test:prepare
 
+rails console --sandbox
+rails console
+
 User.first
 User.all
 User.find_by(email: "mhartl@example.com")
