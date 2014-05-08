@@ -6,6 +6,8 @@ rails destroy  controller FooBars baz quux
 rails generate rspec:install //generate rspec 
 rails generate integration_test static_pages //creates an integration tests
 
+rails generate migration add_index_to_users_email
+
 rails generate scaffold Micropost content:string user_id:integer //generate new model
 
 ruby s //start ruby server
@@ -15,8 +17,22 @@ bundle update
 bundle install
 
 bundle exec rake db:migrate //update db schema
+
 rake db:rollback
 rake db:migrate VERSION=0
+rake test:prepare
+
+rails console --sandbox
+rails console
+
+User.first
+User.all
+User.find_by(email: "mhartl@example.com")
+User.find_by_email();
+User.save();
+User.find(2);
+User.destroy();
+
 
 git push heroku master //deploy code to the heroku
 
