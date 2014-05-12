@@ -21,6 +21,7 @@ bundle exec rake db:migrate //update db schema
 rake db:rollback
 rake db:migrate VERSION=0
 rake test:prepare
+rake db:reset
 
 rails console --sandbox
 rails console
