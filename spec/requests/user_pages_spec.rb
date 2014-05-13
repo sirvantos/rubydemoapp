@@ -1,4 +1,5 @@
 require 'spec_helper'
+include AuthenticationHelpers
 
 describe "User Pages" do
 	subject { page }
@@ -33,17 +34,14 @@ describe "User Pages" do
 				before { click_button submit }
 
 				it { should have_title('Sign up') }
-				it { should have_selector("div#error_explanation") }
+				it { should have_error_message('The form contains') }
 			end
 		end
 
 		describe "with valid information" do
-			before do
-				fill_in "Name", with: "Example User"
-				fill_in "Email", with: "user@example.com"
-				fill_in "Password", with: "qwertytest"
-				fill_in "Confirmation", with: "qwertytest"
-			end
+			let(:sign_up_user) { FactoryGirl.build(:user) }
+
+			before { fill_signup_with_valid_user(sign_up_user) }
 
 			it "should create a user" do
 				expect { click_button submit }.to change(User, :count).by(1)
@@ -51,10 +49,9 @@ describe "User Pages" do
 
 			describe "after submission" do
 				before { click_button submit }
-				let(:user) { User.find_by(email: 'user@example.com') }
+				let(:user) { User.find_by(email: sign_up_user.email) }
 
-				it { should have_title(user.name) }
-				it { should have_selector('div.alert.alert-success', text: 'Welcome') }
+				it_should_behave_like "success sign in"
 			end
 		end
 	end
