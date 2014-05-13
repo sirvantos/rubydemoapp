@@ -10,6 +10,9 @@ rails generate migration add_index_to_users_email
 
 rails generate scaffold Micropost content:string user_id:integer //generate new model
 
+rails console --sandbox
+rails console
+
 ruby s //start ruby server
 
 bundle install --without production
@@ -23,8 +26,7 @@ rake db:migrate VERSION=0
 rake test:prepare
 rake db:reset
 
-rails console --sandbox
-rails console
+rake routes
 
 User.first
 User.all
