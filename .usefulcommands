@@ -7,6 +7,7 @@ rails generate rspec:install //generate rspec
 rails generate integration_test static_pages //creates an integration tests
 
 rails generate migration add_index_to_users_email
+rails generate migration add_remember_token_to_users
 
 rails generate scaffold Micropost content:string user_id:integer //generate new model
 
