@@ -3,7 +3,7 @@ ruby '2.0.0'
 #ruby-gemset=railstutorial_rails_4_0
 
 gem 'rails', '4.0.4'
-gem 'pg', '0.15.1'
+gem 'pg', '~> 0.15.1'
 
 group :development do
 	gem 'guard-rspec', '2.5.0'
@@ -19,6 +19,7 @@ group :test do
 	gem 'factory_girl_rails', '~> 4.2.1'
 	gem 'cucumber-rails', '~> 1.4.0', :require => false
 	gem 'database_cleaner', github: 'bmabey/database_cleaner'
+	gem 'libnotify', '~> 0.8.0'
 end
 
 gem 'bcrypt-ruby', '~> 3.1.2'
@@ -36,9 +37,9 @@ gem 'will_paginate', '~> 3.0.4'
 gem 'bootstrap-will_paginate', '~> 0.0.9'
 
 group :doc do
-  gem 'sdoc', '0.3.20', require: false
+	gem 'sdoc', '0.3.20', require: false
 end
 
 group :production do
-  gem 'rails_12factor', '0.0.2'
+	gem 'rails_12factor', '~> 0.0.2'
 end

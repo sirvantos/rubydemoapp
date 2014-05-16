@@ -40,6 +40,8 @@ User.destroy();
 
 git push heroku master //deploy code to the heroku
 
+heroku restart --app rubytestapp-production
+
 
 
 (1..5).each { |i| puts 2 * i }
