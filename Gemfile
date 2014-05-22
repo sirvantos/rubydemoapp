@@ -22,6 +22,7 @@ group :test do
 	gem 'libnotify', '~> 0.8.0'
 end
 
+gem 'htmlentities', '~> 4.3.1'
 gem 'bcrypt-ruby', '~> 3.1.2'
 gem 'bootstrap-sass', '~> 3.1.1'
 gem 'sprockets', '~> 2.11.0'
