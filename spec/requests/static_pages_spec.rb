@@ -77,5 +77,9 @@ describe "Static pages" do
 				expect(page).to have_selector("li##{item.id}", text: item.content)
 			end
 		end
+
+		it "should show feed items count" do
+			should have_content( user.microposts.count.to_s + ' micropost'.pluralize(user.microposts.count.to_s) )
+		end
 	end
 end

@@ -1,5 +1,8 @@
 require 'spec_helper'
+require 'pp'
+
 include AuthenticationHelpers
+include ActionView::Helpers::OutputSafetyHelper
 
 describe "User Pages" do
 	subject { page }
@@ -85,7 +88,56 @@ describe "User Pages" do
 		describe "microposts" do
 			it { should have_content(m1.content) }
 			it { should have_content(m2.content) }
-			it { should have_content(user.microposts.count) }
+			it { should have_content(
+							'Micropost'.pluralize( user.microposts.count ) + ' (' + user.microposts.count.to_s	+ ')') }
+		end
+
+		describe "microposts pagination" do
+
+			before do
+				30.times { FactoryGirl.create(:micropost, user: user) }
+				visit user_path(user)
+			end
+
+			after { user.microposts.delete_all }
+
+			it { should have_selector('div.pagination') }
+
+			it "should list each user" do
+				user.microposts.paginate(page: 1).each do |micropost|
+					expect(page).to have_selector('li', text: micropost.content)
+				end
+			end
+
+			describe "micropost delete link" do
+				let(:another_user) { FactoryGirl.create(:user) }
+				let!(:m3) { FactoryGirl.create(:micropost, user: another_user, content: "Foo") }
+				let!(:m4) { FactoryGirl.create(:micropost, user: another_user, content: "Bar") }
+
+				before do
+					valid_sign_in(another_user)
+					visit user_path(user)
+				end
+
+				it "should not have delete link" do
+					should_not have_link('delete')
+				end
+			end
+		end
+
+		describe 'micropost long content' do
+			let!(:long_micropost) { FactoryGirl.create(:micropost, user: user,
+				content: "helloooooooooooooooooooooooooooooooooooooooooooooossssssssssdddddddddddddddddd") }
+
+			before { visit user_path(user) }
+
+			it { page.find('li#' + long_micropost.id.to_s + ' span.content').text == rspec_wrap(long_micropost.content) }
+
+			it 'should have separate sign' do
+				page.find('li#' + long_micropost.id.to_s + ' span.content')
+					.text.split(rspec_html_entities_encode("&#8203;"))
+						.length.should == (long_micropost.content.length / 30.0).ceil
+			end
 		end
 	end
 

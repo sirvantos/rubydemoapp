@@ -26,6 +26,7 @@ rake db:rollback
 rake db:migrate VERSION=0
 rake test:prepare
 rake db:reset
+rake staging deploy --trace
 
 bundle exec rake db:reset
 bundle exec rake db:populate
