@@ -188,6 +188,27 @@ describe "User Pages" do
 					it { should have_xpath("//input[@value='Follow']") }
 				end
 			end
+
+			describe "user's stat" do
+				before do
+					visit user_path(other_user)
+					click_button "Follow"
+				end
+
+				describe "followed user" do
+					before { visit user_path(user) }
+
+					it { should have_link("1 following", href: following_user_path(user)) }
+					it { should have_link("0 followers", href: followers_user_path(user)) }
+				end
+
+				describe "following user" do
+					before { valid_sign_in other_user }
+
+					it { should have_link("0 following", href: following_user_path(other_user)) }
+					it { should have_link("1 followers", href: followers_user_path(other_user)) }
+				end
+			end
 		end
 	end
 
