@@ -17,17 +17,16 @@ class User < ActiveRecord::Base
 	before_save { email.downcase! }
 	before_create :create_remember_token
 
-	def User.new_remember_token
+	def self.new_remember_token
 		SecureRandom.urlsafe_base64
 	end
 
-	def User.digest(token)
+	def self.digest(token)
 		Digest::SHA1.hexdigest(token.to_s)
 	end
 
 	def feed
-		# This is preliminary. See "Following users" for the full implementation.
-		Micropost.where("user_id = ?", id)
+		Micropost.from_users_followed_by(self)
 	end
 
 	def following?(other_user)
