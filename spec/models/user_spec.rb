@@ -134,6 +134,30 @@ describe User do
 		its(:remember_token) { should_not be_blank }
 	end
 
+	describe "relationships associations" do
+		let(:other_user) { FactoryGirl.create(:user) }
+		before do
+			@user.save
+			@user.follow!(other_user)
+		end
+
+		it "should have relation" do
+			expect(@user.relationships).not_to be_empty
+			@user.relationships.each do |relationship|
+				expect(Relationship.where(id: relationship.id)).not_to be_empty
+			end
+		end
+
+		it "should destroy associated relationships" do
+			relationships = @user.relationships.to_a
+			@user.destroy
+			expect(relationships).not_to be_empty
+			relationships.each do |relation|
+				expect(Relationship.where(id: relation.id)).to be_empty
+			end
+		end
+	end
+
 	describe "micropost associations" do
 		before { @user.save }
 		let!(:older_micropost) do
