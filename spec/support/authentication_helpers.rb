@@ -15,6 +15,7 @@ module AuthenticationHelpers
 			cookies[:remember_token] = remember_token
 			user.update_attribute(:remember_token, User.digest(remember_token))
 		else
+			user.update_attribute(:confirmation_hash, nil) if !options[:not_confirmed]
 			visit signin_path
 			fill_in "Email",    with: user.email
 			fill_in "Password", with: user.password

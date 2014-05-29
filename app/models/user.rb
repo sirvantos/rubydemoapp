@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
 	has_secure_password
 
 	before_save { email.downcase! }
-	before_create :create_remember_token
+	before_create :create_remember_token, :create_confirmation_hash
 
 	def self.new_remember_token
 		SecureRandom.urlsafe_base64
@@ -45,5 +45,9 @@ class User < ActiveRecord::Base
 
 		def create_remember_token
 			self.remember_token = User.digest(User.new_remember_token)
+		end
+
+		def create_confirmation_hash
+			self.confirmation_hash = Digest::MD5.hexdigest(SecureRandom.urlsafe_base64.to_s)
 		end
 end

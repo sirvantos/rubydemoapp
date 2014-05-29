@@ -243,9 +243,30 @@ describe "User Pages" do
 
 			describe "after submission" do
 				before { click_button submit }
-				let(:user) { User.find_by(email: sign_up_user.email) }
 
-				it_should_behave_like "success sign in"
+				it { should have_success_message('Hello, we have sent confirmation email. Please check your mail') }
+				it { should have_title('') }
+				it { should have_link('Sign in', href: signin_path) }
+
+				describe "should not be signable" do
+					let(:sign_up_user) { FactoryGirl.create(:user) }
+
+					before { valid_sign_in(sign_up_user, not_confirmed: true) }
+
+					it { should have_title('') }
+					it { should have_link('Sign in', href: signin_path) }
+					it { should have_error_message('Invalid email/password combination') }
+					it { sign_up_user.confirmation_hash.should_not be_nil }
+				end
+
+				describe "should confirm sign up" do
+					before do
+						valid_sign_in(sign_up_user)
+						visit registration_confirmation(sign_up_user, sign_up_user.confirmation_hash)
+
+						should_behave_like "success sign in"
+					end
+				end
 			end
 		end
 	end
@@ -256,11 +277,6 @@ describe "User Pages" do
 
 		describe "go to sign up page" do
 			before { get signup_path }
-			specify { expect(response).to redirect_to(root_path) }
-		end
-
-		describe "create new user" do
-			before { post users_path }
 			specify { expect(response).to redirect_to(root_path) }
 		end
 	end
