@@ -249,22 +249,37 @@ describe "User Pages" do
 				it { should have_link('Sign in', href: signin_path) }
 
 				describe "should not be signable" do
-					let(:sign_up_user) { FactoryGirl.create(:user) }
+					let(:refreshed_sign_up_user) { User.find_by(email: sign_up_user.email) }
 
-					before { valid_sign_in(sign_up_user, not_confirmed: true) }
+					before { valid_sign_in(refreshed_sign_up_user, not_confirmed: true) }
 
 					it { should have_title('') }
 					it { should have_link('Sign in', href: signin_path) }
 					it { should have_error_message('Invalid email/password combination') }
-					it { sign_up_user.confirmation_hash.should_not be_nil }
+
+					describe "and confirmation_hash is not nil" do
+						let(:refreshed_sign_up_user) { User.find_by(email: sign_up_user.email) }
+
+						before { valid_sign_in(refreshed_sign_up_user, not_confirmed: true) }
+
+						it { refreshed_sign_up_user.confirmation_hash.should_not be_nil }
+					end
 				end
 
 				describe "should confirm sign up" do
-					before do
-						valid_sign_in(sign_up_user)
-						visit registration_confirmation(sign_up_user, sign_up_user.confirmation_hash)
+					let(:user) { User.find_by(email: sign_up_user.email) }
 
-						should_behave_like "success sign in"
+					before do
+						valid_sign_in(user, not_confirmed: true)
+						visit registration_confirmation_user_path(user, user.confirmation_hash)
+					end
+
+					it_should_behave_like "success sign in"
+
+					describe 'should not confirm sign up two times' do
+						before { visit registration_confirmation_user_path(user, user.confirmation_hash) }
+
+						it { should have_error_message('Sorry, wrong confrimation hash!') }
 					end
 				end
 			end

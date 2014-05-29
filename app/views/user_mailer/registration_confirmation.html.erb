@@ -2,4 +2,4 @@ Hi <%=@user.name%>
 
 You have rigestered on the resource, to cofirm it please go by the link
 
-<%= registration_confirmation(@user, @user.confirmation_hash)%>
+<%=registration_confirmation_user_url(@user, @user.confirmation_hash)%>
