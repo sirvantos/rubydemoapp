@@ -69,6 +69,9 @@ Demoapp::Application.configure do
 	# the I18n.default_locale when a translation can not be found).
 	config.i18n.fallbacks = true
 
+	# Don't care if the mailer can't send.
+	config.action_mailer.raise_delivery_errors = false
+
 	# Send deprecation notices to registered listeners.
 	config.active_support.deprecation = :notify
 
@@ -77,4 +80,22 @@ Demoapp::Application.configure do
 
 	# Use default logging formatter so that PID and timestamp are not suppressed.
 	config.log_formatter = ::Logger::Formatter.new
+
+	config.action_mailer.raise_delivery_errors = true
+
+	# set delivery method to :smtp, :sendmail or :test
+	config.action_mailer.delivery_method = :smtp
+
+	Rails.application.routes.default_url_options[:host] = 'rubytestapp-staging.herokuapp.com'
+
+	# these options are only needed if you choose smtp delivery
+	config.action_mailer.smtp_settings = {
+		address:              	'smtp.gmail.com',
+		port:                 	587,
+		domain:               	'example.com',
+		user_name:				'sirvantosbuglovers@gmail.com',
+		password:				'171282st',
+		authentication:       	'plain',
+		enable_starttls_auto: 	true
+	}
 end
