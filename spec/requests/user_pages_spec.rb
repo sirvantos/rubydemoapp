@@ -243,9 +243,45 @@ describe "User Pages" do
 
 			describe "after submission" do
 				before { click_button submit }
-				let(:user) { User.find_by(email: sign_up_user.email) }
 
-				it_should_behave_like "success sign in"
+				it { should have_success_message('Hello, we have sent confirmation email. Please check your mail') }
+				it { should have_title('') }
+				it { should have_link('Sign in', href: signin_path) }
+
+				describe "should not be signable" do
+					let(:refreshed_sign_up_user) { User.find_by(email: sign_up_user.email) }
+
+					before { valid_sign_in(refreshed_sign_up_user, not_confirmed: true) }
+
+					it { should have_title('') }
+					it { should have_link('Sign in', href: signin_path) }
+					it { should have_error_message('Invalid email/password combination') }
+
+					describe "and confirmation_hash is not nil" do
+						let(:refreshed_sign_up_user) { User.find_by(email: sign_up_user.email) }
+
+						before { valid_sign_in(refreshed_sign_up_user, not_confirmed: true) }
+
+						it { refreshed_sign_up_user.confirmation_hash.should_not be_nil }
+					end
+				end
+
+				describe "should confirm sign up" do
+					let(:user) { User.find_by(email: sign_up_user.email) }
+
+					before do
+						valid_sign_in(user, not_confirmed: true)
+						visit registration_confirmation_user_path(user, user.confirmation_hash)
+					end
+
+					it_should_behave_like "success sign in"
+
+					describe 'should not confirm sign up two times' do
+						before { visit registration_confirmation_user_path(user, user.confirmation_hash) }
+
+						it { should have_error_message('Sorry, wrong confrimation hash!') }
+					end
+				end
 			end
 		end
 	end
@@ -256,11 +292,6 @@ describe "User Pages" do
 
 		describe "go to sign up page" do
 			before { get signup_path }
-			specify { expect(response).to redirect_to(root_path) }
-		end
-
-		describe "create new user" do
-			before { post users_path }
 			specify { expect(response).to redirect_to(root_path) }
 		end
 	end

@@ -32,11 +32,25 @@ class UsersController < ApplicationController
 	def create
 		@user = User.new(user_params)
 		if @user.save
-			sign_in @user
-			flash[:success] = "Welcome to the Sample App!"
-			redirect_to @user
+			UserMailer.registration_confirmation(@user).deliver
+
+			flash[:success] = "Hello, we have sent confirmation email. Please check  your mail"
+			redirect_to root_path
 		else
 			render 'new'
+		end
+	end
+
+	def register_confirmation
+		user = User.find_by(id: params[:id], confirmation_hash: params[:confirmation_hash].downcase)
+		if user
+			user.update_attribute(:confirmation_hash, nil)
+			sign_in user
+			flash[:success] = "Hello, we have activated your account!"
+			redirect_to root_path
+		else
+			flash[:danger] = "Sorry, wrong confrimation hash!"
+			redirect_to root_path
 		end
 	end
 
