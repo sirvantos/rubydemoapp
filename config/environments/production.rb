@@ -86,8 +86,6 @@ Demoapp::Application.configure do
 	# set delivery method to :smtp, :sendmail or :test
 	config.action_mailer.delivery_method = :smtp
 
-	Rails.application.routes.default_url_options[:host] = 'rubytestapp-staging.herokuapp.com'
-
 	# these options are only needed if you choose smtp delivery
 	config.action_mailer.smtp_settings = {
 		address:              	'smtp.gmail.com',
@@ -98,4 +96,6 @@ Demoapp::Application.configure do
 		authentication:       	'plain',
 		enable_starttls_auto: 	true
 	}
+
+	Rails.application.routes.default_url_options[:host] = 'rubytestapp-staging.herokuapp.com'
 end
