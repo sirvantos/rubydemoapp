@@ -3,6 +3,7 @@ class UsersController < ApplicationController
 	before_action :signed_out_user, only: [:create, :new]
 	before_action :correct_user,   only: [:edit, :update]
 	before_action :admin_user,     only: :destroy
+	before_action :get_user_to_reset_password, only: :reset_user_password
 
 	def index
 		@users = User.paginate(page: params[:page])
@@ -54,6 +55,33 @@ class UsersController < ApplicationController
 		end
 	end
 
+	def password_reset
+		if request.post?
+			user = User.find_by(email: params[:email].downcase)
+			if user
+				user.generate_password_reset_hash!
+				user.update_attribute(:password_reset_hash, user.password_reset_hash)
+
+				UserMailer.password_reset_confirmation(user).deliver
+				flash[:success] = "Hello, we have sent reset password email. Please check  your mail"
+				redirect_to root_path
+			else
+				flash.now[:danger] = "User with given email has not been found!"
+			end
+		end
+	end
+
+	def reset_user_password
+		if request.post?
+			if @user.update(password: params[:password], password_confirmation: params[:password_confirmation],
+							password_reset_hash: nil)
+				flash[:success] = "The password has been reseted!"
+				sign_in @user
+				redirect_to root_path
+			end
+		end
+	end
+
 	def destroy
 		user = User.find(params[:id])
 
@@ -95,5 +123,10 @@ class UsersController < ApplicationController
 
 		def signed_out_user
 			redirect_to root_url if signed_in?
+		end
+
+		def get_user_to_reset_password
+			@user  = User.find_by(id: params[:id], password_reset_hash: params[:password_reset_hash])
+			redirect_to(root_url) unless @user
 		end
 end

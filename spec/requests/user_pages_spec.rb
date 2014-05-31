@@ -286,6 +286,92 @@ describe "User Pages" do
 		end
 	end
 
+	describe "password reset" do
+		let(:user) { FactoryGirl.create(:user) }
+
+		before { visit passwordreset_path }
+		it { should have_title('Reset password') }
+		it { should have_button('Reset password') }
+
+		describe "should not reset password for uknown user" do
+			before do
+				fill_in "Email", with: 'notexisted@email.com'
+				click_button 'Reset password'
+			end
+
+			it { should have_title('Reset password') }
+			it { should have_error_message('User with given email has not been found!') }
+		end
+
+		describe "send reset password mail" do
+			before do
+				fill_in "Email", with: user.email
+				click_button 'Reset password'
+				user.reload
+			end
+
+			it { should have_success_message('Hello, we have sent reset password email. Please check your mail') }
+			it { user.password_reset_hash.should_not be_nil }
+
+			describe 'reset password form for wrong id' do
+				before { get reset_password_confirmation_user_path(11111, user.password_reset_hash) }
+
+				specify { expect(response).to redirect_to(root_path) }
+			end
+
+			describe 'reset password form for wrong hash' do
+				before { get reset_password_confirmation_user_path(user, 'cbb735964a61e0e307fbbc820ca94517') }
+
+				specify { expect(response).to redirect_to(root_path) }
+			end
+
+			describe 'show reset password form' do
+				before { visit reset_password_confirmation_user_path(user, user.password_reset_hash) }
+
+				it { should have_title('Reset password for user ' + user.name) }
+				it { should have_button('Reset password') }
+
+				describe 'wrong reset submit' do
+					describe 'empty password submit' do
+						before { click_button 'Reset password' }
+
+						it "should show error message" do
+							should have_error_message('The form contains')
+						end
+					end
+
+					describe 'passwords mismatch' do
+						before do
+							fill_in "Password",         		with: 'somepassword'
+							fill_in "Password confirmation", 	with: 'somepassword1'
+
+							click_button 'Reset password'
+						end
+
+						it "should show error message" do
+							should have_error_message('The form contains')
+						end
+					end
+				end
+
+				describe 'reset password' do
+					before do
+						fill_in "Password",         		with: 'somepassword'
+						fill_in "Password confirmation",	with: 'somepassword'
+
+						click_button 'Reset password'
+
+						user.reload
+					end
+
+					it { should have_success_message('The password has been reseted')  }
+					it_should_behave_like "success sign in"
+					it { user.password_reset_hash.should be_nil }
+				end
+			end
+		end
+	end
+
 	describe "sign up for signed user" do
 		let(:user) { FactoryGirl.create(:user) }
 		before { valid_sign_in(user, no_capybara: true) }

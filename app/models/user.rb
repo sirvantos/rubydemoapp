@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
 	has_many :followers, through: :reverse_relationships
 
 	validates :name, presence: true, length: { maximum: 64 }
+	validates :confirmation_hash, presence: false, length: { maximum: 32 }
+	validates :password_reset_hash, presence: false, length: { maximum: 32 }
 	validates :email, presence: true, length: { maximum: 128 }, format: {with: VALID_EMAIL_REGEX},
 			  uniqueness: { case_sensitive: false }
 	validates :password, length: { minimum: 6 }
@@ -37,6 +39,10 @@ class User < ActiveRecord::Base
 		relationships.create!(followed_id: other_user.id)
 	end
 
+	def generate_password_reset_hash!
+		self.password_reset_hash = generate_md5_hash()
+	end
+
 	def unfollow!(other_user)
 		relationships.find_by(followed_id: other_user.id).destroy
 	end
@@ -48,6 +54,10 @@ class User < ActiveRecord::Base
 		end
 
 		def create_confirmation_hash
-			self.confirmation_hash = Digest::MD5.hexdigest(SecureRandom.urlsafe_base64.to_s)
+			self.confirmation_hash = generate_md5_hash
+		end
+
+		def generate_md5_hash
+			Digest::MD5.hexdigest(SecureRandom.urlsafe_base64.to_s)
 		end
 end

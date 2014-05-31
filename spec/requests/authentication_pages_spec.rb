@@ -9,6 +9,8 @@ describe "AuthenticationPages" do
 
 		it { should have_content("Sign in") }
 		it { should have_title("Sign in") }
+		it { should have_link("Sign in") }
+		it { should have_link("Reset password") }
 
 		describe 'with invalid information' do
 			before { click_button "Sign in" }

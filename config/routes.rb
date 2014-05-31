@@ -4,6 +4,9 @@ Demoapp::Application.routes.draw do
 			get :following, :followers
 			get ':confirmation_hash', :action => 'register_confirmation', as: :registration_confirmation,
 				constraints: { confirmation_hash: /[a-z0-9]{32}/ }
+			match 'resetpassword/:password_reset_hash', :action => 'reset_user_password',
+				as: :reset_password_confirmation,
+				constraints: { password_reset_hash: /[a-z0-9]{32}/ }, via: [:post, :get]
 		end
 	end
 	resources :sessions, only: [:new, :create, :destroy]
@@ -14,9 +17,10 @@ Demoapp::Application.routes.draw do
 	root to: 'static_pages#home'
 
 #authentication routse
-	match '/signup',	to: 'users#new',			via: 'get'
-	match '/signin',	to: 'sessions#new',         via: 'get'
-	match '/signout',	to: 'sessions#destroy',     via: 'delete'
+	match '/signup',		to: 'users#new',				via: 'get'
+	match '/signin',		to: 'sessions#new',         	via: 'get'
+	match '/signout',		to: 'sessions#destroy',     	via: 'delete'
+	match '/passwordreset',	to: 'users#password_reset',    	via: [:post, :get]
 
 	match '/help',		to: 'static_pages#help',	via: 'get'
 	match '/about',		to: 'static_pages#about',	via: 'get'
