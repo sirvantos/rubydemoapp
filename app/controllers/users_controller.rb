@@ -33,7 +33,7 @@ class UsersController < ApplicationController
 	def create
 		@user = User.new(user_params)
 		if @user.save
-			UserMailer.registration_confirmation(@user).deliver
+			Resque.enqueue(MailWorker, for: 'registration_confirmation', user: @user)
 
 			flash[:success] = "Hello, we have sent confirmation email. Please check  your mail"
 			redirect_to root_path
@@ -62,7 +62,7 @@ class UsersController < ApplicationController
 				user.generate_password_reset_hash!
 				user.update_attribute(:password_reset_hash, user.password_reset_hash)
 
-				UserMailer.password_reset_confirmation(user).deliver
+				Resque.enqueue(MailWorker, for: 'password_reset_confirmation', user: @user)
 				flash[:success] = "Hello, we have sent reset password email. Please check  your mail"
 				redirect_to root_path
 			else
