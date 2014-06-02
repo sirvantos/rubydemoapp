@@ -98,4 +98,9 @@ Demoapp::Application.configure do
 	}
 
 	Rails.application.routes.default_url_options[:host] = 'rubytestapp-staging.herokuapp.com'
+
+	ENV["REDISTOGO_URL"] ||= "redis://rediscloud:oXCLmXzyPER9nEqF@pub-redis-17196.us-east-1-3.3.ec2.garantiadata.com:17196"
+
+	uri = URI.parse(ENV["REDISTOGO_URL"])
+	Resque.redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password, :thread_safe => true)
 end
